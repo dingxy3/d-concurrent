@@ -16,71 +16,105 @@ public class ReentrantLock5 implements Lock5 ,Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    private final Sync5 sync5;
 
-    static final class Node5{
-
-        /*共享模式node*/
-        static final Node5 SHARED = new Node5();
-
-        /*独占模式Node*/
-        static final Node5 EXCLUSIVE = null;
-
-        /*线程取消状态值*/
-        static final int CANCELLED =  1;
-         /**后续线程不需要等待*/
-        static final int SIGNAL    = -1;
-        /*线程在Condition上等待*/
-        static final int CONDITION = -2;
-
-        /*传播*/
-        static final int PROPAGATE = -3;
-
-        volatile int waitStatus;
-
-        volatile Node5 prev;
-
-        volatile Node5 next;
-
-        private transient volatile Node5 head;
-
-        private transient volatile Node5 tail;
-
-        private volatile int state;
-
-        volatile Thread thread;
-
-        Node5 nextWaiter;
-
-        protected final int getState(){
-            return state ;
-        }
-
-        protected final void setState(int s){
-            state =s ;
-        }
-
-        final boolean isShared(){  return  nextWaiter == SHARED ; }
-
-
+    public ReentrantLock5() {
+        sync5 = new NonfairSync5() ;
+    }
+    public ReentrantLock5(boolean fair){
+      sync5 =  fair ? new NonfairSync5() : new FairSync5();
     }
 
     abstract static  class Sync5 extends AbstractQueuedSynchronizer{
 
         abstract void lock();
 
+        /*非公平锁尝试获得锁*/
         final boolean nonfairTryAcquire(int acquires){
               final  Thread current = Thread.currentThread();
               int i = getState() ;
               if (i == 0)
               {
-
+                 if (compareAndSetState(0,acquires))
+                 {
+                     setExclusiveOwnerThread(current);
+                     return true;
+                 }
+              }else
+              {
+                  if (current ==getExclusiveOwnerThread())
+                  {
+                      int n = i + acquires ;
+                      if (n < 0)
+                      {
+                          throw new Error("Maxnuim lock count exceeded") ;
+                      }
+                      setState(n);
+                      return  true ;
+                  }
               }
+              return false ;
+        }
+        /*释放锁*/
+        protected final boolean tryRelease(int release){
+            int c = getState() - release ;
+            if (Thread.currentThread() != getExclusiveOwnerThread())
+            {
+                throw new IllegalMonitorStateException();
+            }
+            if (c == 0){
+                setExclusiveOwnerThread(null);
+                return true ;
+            }
+            setState(c);
+            return false ;
+        }
+        /*是否当前线程*/
+        protected  final boolean isHeldExclusively(){
+            return Thread.currentThread() == getExclusiveOwnerThread();
+        }
+        /*return 一个condition*/
+       final ConditionObject newContion(){
+            return new ConditionObject() ;
+       }
+       /*获得当前持有的线程*/
+       final Thread getOwner(){
+           return  getState() == 0 ? null : getExclusiveOwnerThread();
+       }
+       /*当前线程持有的计数*/
+      final int getHoldCount(){
+           return  isHeldExclusively() ? getState() : 0 ;
+    }
+    }
+
+    /**
+     * 非公平锁
+     */
+    static final class NonfairSync5 extends Sync5{
+
+
+        @Override
+        void lock() {
+            if (compareAndSetState(0,1))
+            {
+                setExclusiveOwnerThread(Thread.currentThread());
+            }else
+            {
+                acquire(1);
+            }
         }
     }
 
+    static final class FairSync5 extends Sync5{
+
+        @Override
+        void lock() {
+                acquire(1);
+        }
+    }
 
     public void lock() {
-
+        sync5.lock();
     }
 
     public boolean tryLock() {
