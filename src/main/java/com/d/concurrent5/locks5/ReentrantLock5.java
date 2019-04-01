@@ -31,43 +31,58 @@ public class ReentrantLock5 implements Lock5 ,Serializable {
 
         /*非公平锁尝试获得锁*/
         final boolean nonfairTryAcquire(int acquires){
+
               final  Thread current = Thread.currentThread();
+
               int i = getState() ;
+
               if (i == 0)
               {
                  if (compareAndSetState(0,acquires))
                  {
                      setExclusiveOwnerThread(current);
                      return true;
+
                  }
               }else
               {
                   if (current ==getExclusiveOwnerThread())
                   {
                       int n = i + acquires ;
+
                       if (n < 0)
                       {
                           throw new Error("Maxnuim lock count exceeded") ;
+
                       }
                       setState(n);
                       return  true ;
+
                   }
+
               }
               return false ;
         }
         /*释放锁*/
         protected final boolean tryRelease(int release){
+
             int c = getState() - release ;
+
             if (Thread.currentThread() != getExclusiveOwnerThread())
             {
+
                 throw new IllegalMonitorStateException();
             }
             if (c == 0){
+
                 setExclusiveOwnerThread(null);
                 return true ;
+
             }
+
             setState(c);
             return false ;
+
         }
         /*是否当前线程*/
         protected  final boolean isHeldExclusively(){
@@ -84,7 +99,21 @@ public class ReentrantLock5 implements Lock5 ,Serializable {
        /*当前线程持有的计数*/
       final int getHoldCount(){
            return  isHeldExclusively() ? getState() : 0 ;
-    }
+       }
+       /*是否上锁*/
+       final boolean isLocked(){
+          return getState() != 0 ;
+       }
+        /**
+         * 从流中重新构造实例，即反序列化。
+         */
+        private void readObject(java.io.ObjectInputStream s)
+                throws java.io.IOException, ClassNotFoundException {
+
+            s.defaultReadObject();
+            setState(0); // reset to unlocked state
+
+        }
     }
 
     /**
@@ -95,13 +124,19 @@ public class ReentrantLock5 implements Lock5 ,Serializable {
 
         @Override
         void lock() {
+
             if (compareAndSetState(0,1))
             {
                 setExclusiveOwnerThread(Thread.currentThread());
+
             }else
             {
                 acquire(1);
+
             }
+        }
+        protected final boolean tryAcquires(int a){
+            return nonfairTryAcquire(a);
         }
     }
 
@@ -111,6 +146,34 @@ public class ReentrantLock5 implements Lock5 ,Serializable {
         void lock() {
                 acquire(1);
         }
+
+        protected final boolean tryAcquires(int a){
+
+            final Thread t = Thread.currentThread() ;
+
+            int c = getState() ;
+
+            if (c == 0){
+                if (compareAndSetState(0,a) && !hasQueuedPredecessors())
+                {
+                    setExclusiveOwnerThread(t);
+                    return true ;
+
+                }
+            }else if(t == getExclusiveOwnerThread())
+            {
+                int n = c + a ;
+                if (n < 0)
+                {
+                    throw new Error("Maximum lock count exceeded");
+                }
+                setState(n);
+                return true ;
+
+            }
+            return false;
+
+        }
     }
 
     public void lock() {
@@ -118,11 +181,11 @@ public class ReentrantLock5 implements Lock5 ,Serializable {
     }
 
     public boolean tryLock() {
-        return false;
+        return sync5.nonfairTryAcquire(1);
     }
 
-    public boolean tryLock(long times, TimeUnit unit) {
-        return false;
+    public boolean tryLock(long times, TimeUnit unit) throws InterruptedException {
+        return sync5.tryAcquireNanos(1,unit.toNanos(times));
     }
 
     public void lockInterruptibly() {
@@ -130,10 +193,12 @@ public class ReentrantLock5 implements Lock5 ,Serializable {
     }
 
     public void unlock() {
-
+        sync5.tryRelease(1) ;
     }
 
     public Condition5 newConditon5() {
-        return null;
+
+       // return sync5.newContion() ;
+        return null ;
     }
 }

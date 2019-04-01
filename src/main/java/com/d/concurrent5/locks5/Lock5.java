@@ -16,7 +16,7 @@ public interface Lock5 {
 
     boolean tryLock();
 
-    boolean tryLock(long times, TimeUnit unit);
+    boolean tryLock(long times, TimeUnit unit) throws InterruptedException;
 
     void lockInterruptibly();
 
