@@ -1,5 +1,7 @@
 package com.d.concurrent5.locks5;
 
+import java.io.Serializable;
+
 /**
  * ============================
  *
@@ -9,5 +11,15 @@ package com.d.concurrent5.locks5;
  * @since [产品/模块版本]
  * =============================
  */
-public class AbstractOwnableSynchronizer5 {
+public abstract class AbstractOwnableSynchronizer5 implements Serializable{
+
+    private static final long serialVersionUID = 1L;
+
+    protected AbstractOwnableSynchronizer5(){}
+
+    /**
+     * 当前线程的持有者，独享模式的同步
+     */
+    private transient Thread exclusiveOwnerThread ;
+
 }
