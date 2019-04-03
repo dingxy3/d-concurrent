@@ -1,5 +1,7 @@
 package com.d.concurrent5.locks5;
 
+import sun.misc.Unsafe;
+
 import java.io.Serializable;
 
 /**
@@ -13,6 +15,23 @@ import java.io.Serializable;
  */
 public abstract class AbstractQueuedSynchronizer5 extends AbstractOwnableSynchronizer5 implements Serializable{
    public static final long  serialVersionUID = 1L;
+
+    private transient volatile Node5 head ;
+
+    private transient volatile Node5 tail ;
+
+    private transient volatile  long state ;
+
+    private static final Unsafe unsafe = Unsafe.getUnsafe();
+
+
+    protected final long getState() {
+        return state;
+    }
+
+    protected final  void setState(long newState){
+        state = newState ;
+    }
 
     protected AbstractQueuedSynchronizer5() { }
 
@@ -67,5 +86,31 @@ public abstract class AbstractQueuedSynchronizer5 extends AbstractOwnableSynchro
             this.waitStatus = waitStatus;
             this.thread = thread;
         }
+    }
+
+    private static final long stateOffset;
+    private static final long headOffset;
+    private static final long tailOffset;
+    private static final long waitStatusOffset;
+    private static final long nextOffset;
+
+    static {
+        try {
+            stateOffset = unsafe.objectFieldOffset
+                    (AbstractQueuedSynchronizer5.class.getDeclaredField("state"));
+            headOffset = unsafe.objectFieldOffset
+                    (AbstractQueuedSynchronizer5.class.getDeclaredField("head"));
+            tailOffset = unsafe.objectFieldOffset
+                    (AbstractQueuedSynchronizer5.class.getDeclaredField("tail"));
+            waitStatusOffset = unsafe.objectFieldOffset
+                    (Node5.class.getDeclaredField("waitStatus"));
+            nextOffset = unsafe.objectFieldOffset
+                    (Node5.class.getDeclaredField("next"));
+
+        } catch (Exception ex) { throw new Error(ex); }
+    }
+
+    protected final  boolean compareAndSetState(long expect ,long update){
+      return   unsafe .compareAndSwapLong(this,stateOffset,expect,update) ;
     }
 }
