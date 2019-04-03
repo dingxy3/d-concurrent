@@ -22,4 +22,16 @@ public abstract class AbstractOwnableSynchronizer5 implements Serializable{
      */
     private transient Thread exclusiveOwnerThread ;
 
+    /**
+     * 设置当前线程为独享线程
+     * @param t
+     */
+    protected final void setExclusiveOwnerThread(Thread t){
+        exclusiveOwnerThread = t ;
+    }
+
+    protected  final Thread getExclusiveOwnerThread(){
+        return exclusiveOwnerThread ;
+    }
+
 }
