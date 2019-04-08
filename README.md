@@ -14,7 +14,7 @@ ReentrantLock
        抽象内部类Sync继承AQS
            静态子类NonFairSync
            静态子类FairSync
-    
+        上面为策略模式
         void lock()
         boolean tryLock()
         boolean  tryLoct(long,TimeUnit)
