@@ -127,7 +127,7 @@ public abstract class AbstractQueuedSynchronizer5 extends AbstractOwnableSynchro
         return unsafe.compareAndSwapObject(this, tailOffset, expect, update);
     }
     /**
-     * 很经典的一个套路，将当前节点加入队列
+     * 很经典的一个套路，将当前节点加入队列尾端
      * @param node
      * @return
      */
@@ -148,5 +148,28 @@ public abstract class AbstractQueuedSynchronizer5 extends AbstractOwnableSynchro
                   }
               }
           }
+    }
+
+
+    /**
+     * 加入队列
+     * @param node
+     * @return
+     */
+    private Node5 addWaiter(Node5 node){
+       Node5 t = new Node5(Thread.currentThread(),node) ;
+       Node5 pred  = tail ;
+       if (pred != null)
+       {
+         node.prev = pred ;
+         if (compareAndSetTail(pred ,node))
+         {
+             pred.next = node ;
+             return  node ;
+         }
+       }
+       enq(node) ;
+
+       return  node ;
     }
 }
