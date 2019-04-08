@@ -113,4 +113,40 @@ public abstract class AbstractQueuedSynchronizer5 extends AbstractOwnableSynchro
     protected final  boolean compareAndSetState(long expect ,long update){
       return   unsafe .compareAndSwapLong(this,stateOffset,expect,update) ;
     }
+
+    static final long spinForTimeoutThreshold = 1000L;
+
+    /**
+     * CAS head field. Used only by enq.
+     */
+    private final boolean compareAndSetHead(Node5 update) {
+        return unsafe.compareAndSwapObject(this, headOffset, null, update);
+    }
+
+    private final boolean compareAndSetTail(Node5 expect, Node5 update) {
+        return unsafe.compareAndSwapObject(this, tailOffset, expect, update);
+    }
+    /**
+     * 很经典的一个套路，将当前节点加入队列
+     * @param node
+     * @return
+     */
+    private Node5 enq(final Node5 node) {
+          for (;;)
+          {
+              Node5 t = tail ;
+              if (t == null){
+                  if (compareAndSetHead(new Node5())){
+                      tail = head ;
+                  }
+              }else
+              {
+                  node.prev = tail ;
+                  if (compareAndSetTail(t,node)){
+                      t.next = node ;
+                      return  t ;
+                  }
+              }
+          }
+    }
 }
