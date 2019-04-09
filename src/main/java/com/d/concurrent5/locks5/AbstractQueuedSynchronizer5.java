@@ -137,6 +137,11 @@ public abstract class AbstractQueuedSynchronizer5 extends AbstractOwnableSynchro
         return unsafe.compareAndSwapInt(node, waitStatusOffset,
                 expect, update);
     }
+
+    public static void main(String[] args) throws NoSuchFieldException {
+        System.out.println(unsafe.objectFieldOffset
+                (AbstractQueuedSynchronizer5.class.getDeclaredField("state")));
+    }
     /**
      * 很经典的一个套路，将当前节点加入队列尾端
      * @param node
