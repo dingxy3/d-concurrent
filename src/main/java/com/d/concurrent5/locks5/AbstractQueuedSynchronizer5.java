@@ -64,6 +64,11 @@ public abstract class AbstractQueuedSynchronizer5 extends AbstractOwnableSynchro
             return nextWaiter == SHARED;
         }
 
+        /**
+         * 返回前驱节点
+         * @return
+         * @throws NullPointerException
+         */
         final Node5 predecessor() throws NullPointerException{
             Node5 p = prev ;
             if (p == null)
@@ -171,5 +176,11 @@ public abstract class AbstractQueuedSynchronizer5 extends AbstractOwnableSynchro
        enq(node) ;
 
        return  node ;
+    }
+
+    private void setHead(Node5 node){
+        head = node ;
+        node.thread =null ;
+        node.prev = null ;
     }
 }
