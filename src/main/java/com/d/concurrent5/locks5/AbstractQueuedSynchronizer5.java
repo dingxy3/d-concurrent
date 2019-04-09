@@ -178,6 +178,10 @@ public abstract class AbstractQueuedSynchronizer5 extends AbstractOwnableSynchro
        return  node ;
     }
 
+    /**
+     * 设置头节点
+     * @param node
+     */
     private void setHead(Node5 node){
         head = node ;
         node.thread =null ;
