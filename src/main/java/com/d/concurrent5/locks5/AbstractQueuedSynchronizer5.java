@@ -131,6 +131,12 @@ public abstract class AbstractQueuedSynchronizer5 extends AbstractOwnableSynchro
     private final boolean compareAndSetTail(Node5 expect, Node5 update) {
         return unsafe.compareAndSwapObject(this, tailOffset, expect, update);
     }
+    private static final boolean compareAndSetWaitStatus(Node5 node,
+                                                         int expect,
+                                                         int update) {
+        return unsafe.compareAndSwapInt(node, waitStatusOffset,
+                expect, update);
+    }
     /**
      * 很经典的一个套路，将当前节点加入队列尾端
      * @param node
@@ -186,5 +192,15 @@ public abstract class AbstractQueuedSynchronizer5 extends AbstractOwnableSynchro
         head = node ;
         node.thread =null ;
         node.prev = null ;
+    }
+
+    private void unparkSuccessor(Node5 node) {
+
+        int ws = node.waitStatus;
+
+        if (ws < 0)
+        {
+            compareAndSetWaitStatus(node,ws,0) ;
+        }
     }
 }
