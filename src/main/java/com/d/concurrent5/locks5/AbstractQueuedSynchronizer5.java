@@ -3,6 +3,7 @@ package com.d.concurrent5.locks5;
 import sun.misc.Unsafe;
 
 import java.io.Serializable;
+import java.util.concurrent.locks.LockSupport;
 
 /**
  * ============================
@@ -207,5 +208,22 @@ public abstract class AbstractQueuedSynchronizer5 extends AbstractOwnableSynchro
         {
             compareAndSetWaitStatus(node,ws,0) ;
         }
+        Node5 s = node.next ;
+        if (s == null || s.waitStatus > 0)
+        {
+            s = null ;
+            for (Node5 t = tail ; t != null && t != node ; t =t.prev )
+            {
+                if(t.waitStatus <= 0)
+                {
+                    s = t ;
+                }
+            }
+            if (s != null)
+            {
+                LockSupport.unpark(s.thread);
+            }
+        }
     }
+
 }
