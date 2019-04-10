@@ -3,6 +3,7 @@ package com.d.concurrent5.locks5;
 import sun.misc.Unsafe;
 
 import java.io.Serializable;
+import java.util.concurrent.locks.LockSupport;
 
 /**
  * ============================
@@ -20,16 +21,28 @@ public abstract class AbstractQueuedSynchronizer5 extends AbstractOwnableSynchro
 
     private transient volatile Node5 tail ;
 
-    private transient volatile  long state ;
+    private transient volatile  int state ;
 
     private static final Unsafe unsafe = Unsafe.getUnsafe();
 
+    /**
+     * 读锁共享锁
+     * @param arg
+     * @return
+     */
+    protected int tryAcquireShared(int arg) {
+        throw new UnsupportedOperationException();
+    }
+    /*释放锁通过compareAndSwap*/
+    protected boolean tryReleaseShared(int arg) {
+        throw new UnsupportedOperationException();
+    }
 
-    protected final long getState() {
+    protected final int getState() {
         return state;
     }
 
-    protected final  void setState(long newState){
+    protected final  void setState(int newState){
         state = newState ;
     }
 
@@ -206,6 +219,87 @@ public abstract class AbstractQueuedSynchronizer5 extends AbstractOwnableSynchro
         if (ws < 0)
         {
             compareAndSetWaitStatus(node,ws,0) ;
+        }
+        Node5 s = node.next ;
+        if (s == null || s.waitStatus > 0)
+        {
+            s = null ;
+            for (Node5 t = tail ; t != null && t != node ; t =t.prev )
+            {
+                if(t.waitStatus <= 0)
+                {
+                    s = t ;
+                }
+            }
+            if (s != null)
+            {
+                LockSupport.unpark(s.thread);
+            }
+        }
+    }
+
+    public final boolean releaseShared(int arg) {
+        if (tryReleaseShared(arg)) {
+            doReleaseShared();
+            return true;
+        }
+        return false;
+    }
+
+    private void doReleaseShared() {
+
+        for (;;)
+        {
+            Node5 h = head;
+            if (h != null && h != tail)
+            {
+                int ws = h.waitStatus;
+                if (ws == Node5.SIGNAL)
+                {
+                    if (!compareAndSetWaitStatus(h, Node5.SIGNAL, 0))
+                        continue;            // loop to recheck cases
+                    unparkSuccessor(h);
+                }
+                else if (ws == 0 &&
+                        !compareAndSetWaitStatus(h, 0, Node5.PROPAGATE))
+                    continue;                // loop on failed CAS
+            }
+            if (h == head)                   // loop if head changed
+                break;
+        }
+    }
+
+    public final void acquireSharedInterruptibly(int arg)
+            throws InterruptedException {
+        if (Thread.interrupted())
+            throw new InterruptedException();
+        if (tryAcquireShared(arg) < 0)
+            doAcquireSharedInterruptibly(arg);
+    }
+
+    private void doAcquireSharedInterruptibly(int arg)
+            throws InterruptedException {
+        final Node5 node = addWaiter(Node5.SHARED);
+        boolean failed = true;
+        try {
+            for (;;) {
+                final Node5 p = node.predecessor();
+                if (p == head) {
+                    int r = tryAcquireShared(arg);
+                    if (r >= 0) {
+                        setHeadAndPropagate(node, r);
+                        p.next = null; // help GC
+                        failed = false;
+                        return;
+                    }
+                }
+                if (shouldParkAfterFailedAcquire(p, node) &&
+                        parkAndCheckInterrupt())
+                    throw new InterruptedException();
+            }
+        } finally {
+            if (failed)
+                cancelAcquire(node);
         }
     }
 }
