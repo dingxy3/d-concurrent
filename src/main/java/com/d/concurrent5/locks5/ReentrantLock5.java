@@ -64,6 +64,7 @@ public class ReentrantLock5 implements Lock5 ,Serializable {
               return false ;
         }
         /*释放锁*/
+        @Override
         protected final boolean tryRelease(int release){
 
             int c = getState() - release ;
@@ -85,6 +86,7 @@ public class ReentrantLock5 implements Lock5 ,Serializable {
 
         }
         /*是否当前线程*/
+        @Override
         protected  final boolean isHeldExclusively(){
             return Thread.currentThread() == getExclusiveOwnerThread();
         }
