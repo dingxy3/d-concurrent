@@ -3,7 +3,7 @@ package com.d.dingxy;
 /**
  * @param
  * @Author: dingxy3
- * @Description:有界缓存基类
+ * @Description:有界缓存基类，类似组队列，为空take不了，满了put不了
  * @Date: Created in  2019/4/10
  **/
 public abstract class BaseBoundedBuffer<V> {
