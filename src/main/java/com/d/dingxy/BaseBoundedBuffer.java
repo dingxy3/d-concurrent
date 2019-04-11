@@ -3,7 +3,7 @@ package com.d.dingxy;
 /**
  * @param
  * @Author: dingxy3
- * @Description:条件谓词 条件队列 锁  有界阻塞队列
+ * @Description:有界缓存基类
  * @Date: Created in  2019/4/10
  **/
 public abstract class BaseBoundedBuffer<V> {
@@ -18,21 +18,39 @@ public abstract class BaseBoundedBuffer<V> {
         buff = (V[]) new Object[capacity];
     }
 
-    protected   synchronized  final V doTake(){
-        V v = buff[head];
-
-        return v ;
+    protected   synchronized  final void doPut(V v){
+        buff[tail] = v;
+        if (++tail == buff.length)
+        {
+            tail = 0 ;
+        }
+        ++count ;
     }
 
-    protected  synchronized final void  doPut(){
-
+    protected  synchronized final V  doTake(){
+            V v = buff[head] ;
+            buff[head] =null ;
+            if (++head == buff.length){
+                head = 0 ;
+            }
+            --count ;
+            return v;
     }
 
-    private synchronized final boolean isFull(){
+    /**
+     * 队列是否满了
+     * @return
+     */
+    protected synchronized final boolean isFull(){
 
         return buff.length == count ;
     }
-    private synchronized final boolean isEmpty(){
+
+    /**
+     * 队列是否空的
+     * @return
+     */
+    protected synchronized final boolean isEmpty(){
         return  count == 0 ;
     }
 
