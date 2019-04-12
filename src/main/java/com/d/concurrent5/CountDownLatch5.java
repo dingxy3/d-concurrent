@@ -22,7 +22,7 @@ public class CountDownLatch5 {
           return  getState();
        }
         protected int tryAcquireShared(int arg) {
-           return (getState()==0) ? 1 : -1 ;
+           return ( getState() == 0 ) ? 1 : -1 ;
         }
         /*释放锁通过compareAndSwap*/
         protected boolean tryReleaseShared(int arg) {

@@ -276,6 +276,35 @@ public abstract class AbstractQueuedSynchronizer5 extends AbstractOwnableSynchro
         if (tryAcquireShared(arg) < 0)
             doAcquireSharedInterruptibly(arg);
     }
+    private void setHeadAndPropagate(Node5 node, long propagate) {
+        Node5 h = head; // Record old head for check below
+        setHead(node);
+
+        if (propagate > 0 || h == null || h.waitStatus < 0 ||
+                (h = head) == null || h.waitStatus < 0) {
+            Node5 s = node.next;
+            if (s == null || s.isShared())
+                doReleaseShared();
+        }
+    }
+
+    private static boolean shouldParkAfterFailedAcquire(Node5 pred, Node5 node) {
+        int ws = pred.waitStatus;
+        if (ws == Node5.SIGNAL)
+
+            return true;
+        if (ws > 0) {
+
+            do {
+                node.prev = pred = pred.prev;
+            } while (pred.waitStatus > 0);
+            pred.next = node;
+        } else {
+
+            compareAndSetWaitStatus(pred, ws, Node5.SIGNAL);
+        }
+        return false;
+    }
 
     private void doAcquireSharedInterruptibly(int arg)
             throws InterruptedException {
@@ -301,5 +330,59 @@ public abstract class AbstractQueuedSynchronizer5 extends AbstractOwnableSynchro
             if (failed)
                 cancelAcquire(node);
         }
+    }
+
+    private final boolean parkAndCheckInterrupt() {
+        LockSupport.park(this);
+        return Thread.interrupted();
+    }
+
+    private void cancelAcquire(Node5 node) {
+        // Ignore if node doesn't exist
+        if (node == null)
+            return;
+
+        node.thread = null;
+
+        // Skip cancelled predecessors
+        Node5 pred = node.prev;
+        while (pred.waitStatus > 0)
+            node.prev = pred = pred.prev;
+
+        // predNext is the apparent node to unsplice. CASes below will
+        // fail if not, in which case, we lost race vs another cancel
+        // or signal, so no further action is necessary.
+        Node5 predNext = pred.next;
+
+        // Can use unconditional write instead of CAS here.
+        // After this atomic step, other Nodes can skip past us.
+        // Before, we are free of interference from other threads.
+        node.waitStatus = Node5.CANCELLED;
+
+        // If we are the tail, remove ourselves.
+        if (node == tail && compareAndSetTail(node, pred)) {
+            compareAndSetNext(pred, predNext, null);
+        } else {
+            // If successor needs signal, try to set pred's next-link
+            // so it will get one. Otherwise wake it up to propagate.
+            int ws;
+            if (pred != head &&
+                    ((ws = pred.waitStatus) == Node5.SIGNAL ||
+                            (ws <= 0 && compareAndSetWaitStatus(pred, ws, Node5.SIGNAL))) &&
+                    pred.thread != null) {
+                Node5 next = node.next;
+                if (next != null && next.waitStatus <= 0)
+                    compareAndSetNext(pred, predNext, next);
+            } else {
+                unparkSuccessor(node);
+            }
+
+            node.next = node; // help GC
+        }
+    }
+    private static final boolean compareAndSetNext(Node5 node,
+                                                   Node5 expect,
+                                                   Node5 update) {
+        return unsafe.compareAndSwapObject(node, nextOffset, expect, update);
     }
 }
