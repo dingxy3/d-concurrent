@@ -33,7 +33,15 @@ public class Semaphore5 {
          Syn(int permits){ setState(permits); }
 
         final int nonfairTryAcquireShared(int acquires) {
-
+                for (;;)
+                {
+                    int available = getState() ;
+                    int remaining = available - acquires ;
+                    if (remaining < 0 || compareAndSetState(available,remaining))
+                    {
+                        return  remaining ;
+                    }
+                }
         }
     }
 
