@@ -1,11 +1,14 @@
 ### 前言
 ```
-在java开发中，常常需要用到锁这一类东西，在理解ReentrantLock之前需要了解
-AbstractQueuedSynchronizer的一些原理
+
 ```
 
 ### 背景
 #### ReentrantLock源码剖析
+```
+在java开发中，常常需要用到锁这一类东西，在理解ReentrantLock之前需要了解
+AbstractQueuedSynchronizer的一些原理
+```
 
 ##### ReentrantLock几个重要代码结构
 ```
