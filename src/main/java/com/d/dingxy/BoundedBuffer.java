@@ -11,4 +11,21 @@ public class BoundedBuffer<V> extends  BaseBoundedBuffer<V> {
     public BoundedBuffer(int capacity){
         super(capacity);
     }
+
+    public void put(V v) throws InterruptedException {
+          while (isFull()){
+              wait();
+          }
+          doPut(v);
+          notifyAll();
+    }
+
+    public  V take(V v) throws InterruptedException {
+        while (isEmpty()){
+            wait();
+        }
+        V v1 =  doTake() ;
+        notifyAll();
+        return v1;
+    }
 }

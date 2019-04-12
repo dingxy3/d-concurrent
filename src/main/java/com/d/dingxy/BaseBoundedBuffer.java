@@ -12,7 +12,7 @@ public abstract class BaseBoundedBuffer<V> {
     private final V[] buff ;
     private  int head ;
     private int tail ;
-    private  int count ;
+    private volatile int count ;
 
     public  BaseBoundedBuffer(int capacity){
         buff = (V[]) new Object[capacity];
