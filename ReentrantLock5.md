@@ -36,3 +36,5 @@ Sync以抽象内部类的身份在ReenTrantLock出现
 第二个实现了公平锁和非公平锁的分离，策略模式
 
 具体怎么实现公平和非公平2个构造方法，默认非公平，传boolean
+ReentrantLock()
+          ReentrantLock(boolean)
