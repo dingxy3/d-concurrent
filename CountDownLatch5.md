@@ -50,3 +50,7 @@ class WorkerRunnable implements Runnable {
 
 
 #### CountDownLatch代码结构
+     静态内部类Sync 继承AQS，重写了几个方法
+     await()方法
+     countDown()方法
+     
