@@ -21,18 +21,22 @@ public class CountDownLatch5 {
        int getCount(){
           return  getState();
        }
+        @Override
         protected int tryAcquireShared(int arg) {
            return ( getState() == 0 ) ? 1 : -1 ;
         }
         /*释放锁通过compareAndSwap*/
+        @Override
         protected boolean tryReleaseShared(int arg) {
             for (;;) {
                 int c = getState();
-                if (c == 0)
+                if (c == 0) {
                     return false;
+                }
                 int nextc = c-1;
-                if (compareAndSetState(c, nextc))
+                if (compareAndSetState(c, nextc)) {
                     return nextc == 0;
+                }
             }
         }
     }
