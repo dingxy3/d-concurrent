@@ -6,7 +6,9 @@
 ```
 
 ### 背景
+java中许多阻塞的类，如ReentrantLock、Semphore、CountDownLatch、
 
+FutureTask、ReentrantReadWriteLock、SynchronousQueue都是基于AQS构建的
 
 ###
 
