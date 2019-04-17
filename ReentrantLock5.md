@@ -1,6 +1,9 @@
 ### 前言
 ```
-ReentranLock只支持独占方式的获取操作
+ReentranLock只支持独占方式的获取操作,内部类Sync集成AQS,并且重写了
+tryAcquire()->lock
+tryRelease()->方法
+isHeldExclusively()
 ```
 
 ### 背景

@@ -137,7 +137,7 @@ public class ReentrantLock5 implements Lock5 ,Serializable {
 
             }
         }
-        protected final boolean tryAcquires(int a){
+        protected final boolean tryAcquire(int a){
             return nonfairTryAcquire(a);
         }
     }
@@ -149,7 +149,7 @@ public class ReentrantLock5 implements Lock5 ,Serializable {
                 acquire(1);
         }
 
-        protected final boolean tryAcquires(int a){
+        protected final boolean tryAcquire(int a){
 
             final Thread t = Thread.currentThread() ;
 
