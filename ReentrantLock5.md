@@ -10,7 +10,7 @@ isHeldExclusively()
 #### ReentrantLock源码剖析
 ```
 在java开发中，常常需要用到锁这一类东西，在理解ReentrantLock之前需要了解
-AbstractQueuedSynchronizer的一些原理
+AbstractQueuedSynchronizer的一些原理，基于aqs的state为0时表示锁被占用，为1时表示锁被释放
 ```
 
 ##### ReentrantLock几个重要代码结构
