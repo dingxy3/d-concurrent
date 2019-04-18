@@ -31,9 +31,9 @@ public class ReentrantLock5 implements Lock5 ,Serializable {
 
         /*非公平锁尝试获得锁*/
         final boolean nonfairTryAcquire(int acquires){
-
+             /*获得当前线程*/
               final  Thread current = Thread.currentThread();
-
+              /**/
               int i = getState() ;
 
               if (i == 0)
