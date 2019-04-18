@@ -68,6 +68,7 @@ public class ReentrantLock5 implements Lock5 ,Serializable {
         @Override
         protected final boolean tryRelease(int release){
 
+            //获得当前锁的状态并且减去
             int c = getState() - release ;
 
             if (Thread.currentThread() != getExclusiveOwnerThread())
@@ -196,7 +197,7 @@ public class ReentrantLock5 implements Lock5 ,Serializable {
     }
 
     public void unlock() {
-        sync5.tryRelease(1) ;
+        sync5.release(1) ;
     }
 
     public Condition5 newConditon5() {
