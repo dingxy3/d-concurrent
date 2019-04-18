@@ -33,22 +33,23 @@ public class ReentrantLock5 implements Lock5 ,Serializable {
         final boolean nonfairTryAcquire(int acquires){
              /*获得当前线程*/
               final  Thread current = Thread.currentThread();
-              /**/
+              /*获得AQS的状态，看看是否锁被占用*/
               int i = getState() ;
-
+             /*如果锁没有被占用*/
               if (i == 0)
               {
-                 if (compareAndSetState(0,acquires))
+                 if (compareAndSetState(0,acquires))//cas比较并且替换原值
                  {
+                     /*设置当前线程为持有锁的线程*/
                      setExclusiveOwnerThread(current);
                      return true;
 
                  }
               }else
               {
-                  if (current ==getExclusiveOwnerThread())
+                  if (current ==getExclusiveOwnerThread())//如果当前线程等于锁持有线程（可重入锁）
                   {
-                      int n = i + acquires ;
+                      int n = i + acquires ;//锁状态加1
 
                       if (n < 0)
                       {
