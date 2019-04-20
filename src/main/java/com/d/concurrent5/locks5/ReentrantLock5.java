@@ -59,7 +59,7 @@ public class ReentrantLock5 implements Lock5 ,Serializable {
                           throw new Error("Maxnuim lock count exceeded") ;
 
                       }
-                      /*设置锁状态*/
+                      /*设置锁状态为n*/
                       setState(n);
                       return  true ;
 
@@ -140,12 +140,14 @@ public class ReentrantLock5 implements Lock5 ,Serializable {
 
             }else
             {
+                /*尝试获取锁，如果没获得一直阻塞在队列（自旋获取排他锁）里直到获得锁*/
                 acquire(1);
 
             }
         }
         @Override
         protected final boolean tryAcquire(int a){
+
             return nonfairTryAcquire(a);
         }
     }
@@ -154,18 +156,24 @@ public class ReentrantLock5 implements Lock5 ,Serializable {
 
         @Override
         void lock() {
+                //获取锁，如果没获得一直阻塞在队列里直到获得锁*/
                 acquire(1);
         }
 
         @Override
         protected final boolean tryAcquire(int a){
 
+            ///获得当前线程
             final Thread t = Thread.currentThread() ;
 
+            //获得锁的状态
             int c = getState() ;
-
+            //如果当前锁没有被任何线程占有
             if (c == 0){
-                if (compareAndSetState(0,a) && !hasQueuedPredecessors())
+                //并判断当前线程是否在队列的队首，也就是是否有等待更久的线程。如果是队首返回ture并执行cas操作
+                /*hasQueuedPredecessors是实现公平锁的保证*/
+               // if (compareAndSetState(0,a) && !hasQueuedPredecessors())错误
+                if ( !hasQueuedPredecessors() && compareAndSetState(0,a) )
                 {
                     setExclusiveOwnerThread(t);
                     return true ;
