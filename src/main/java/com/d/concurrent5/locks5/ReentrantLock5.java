@@ -139,6 +139,7 @@ public class ReentrantLock5 implements Lock5 ,Serializable {
 
             }
         }
+        @Override
         protected final boolean tryAcquire(int a){
             return nonfairTryAcquire(a);
         }
@@ -151,6 +152,7 @@ public class ReentrantLock5 implements Lock5 ,Serializable {
                 acquire(1);
         }
 
+        @Override
         protected final boolean tryAcquire(int a){
 
             final Thread t = Thread.currentThread() ;
@@ -180,26 +182,32 @@ public class ReentrantLock5 implements Lock5 ,Serializable {
         }
     }
 
+    @Override
     public void lock() {
         sync5.lock();
     }
 
+    @Override
     public boolean tryLock() {
         return sync5.nonfairTryAcquire(1);
     }
 
+    @Override
     public boolean tryLock(long times, TimeUnit unit) throws InterruptedException {
         return sync5.tryAcquireNanos(1,unit.toNanos(times));
     }
 
+    @Override
     public void lockInterruptibly() {
 
     }
 
+    @Override
     public void unlock() {
         sync5.release(1) ;
     }
 
+    @Override
     public Condition5 newConditon5() {
 
        // return sync5.newContion() ;
