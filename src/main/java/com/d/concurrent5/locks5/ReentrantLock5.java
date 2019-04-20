@@ -21,12 +21,15 @@ public class ReentrantLock5 implements Lock5 ,Serializable {
     public ReentrantLock5() {
         sync5 = new NonfairSync5() ;
     }
+    /*策略模式根据入参new不同的锁*/
     public ReentrantLock5(boolean fair){
       sync5 =  fair ? new NonfairSync5() : new FairSync5();
     }
 
     abstract static  class Sync5 extends AbstractQueuedSynchronizer{
-
+        /**
+         * 策略模式获得公平锁还是非公平锁
+         */
         abstract void lock();
 
         /*非公平锁尝试获得锁*/
@@ -38,7 +41,7 @@ public class ReentrantLock5 implements Lock5 ,Serializable {
              /*如果锁没有被占用*/
               if (i == 0)
               {
-                 if (compareAndSetState(0,acquires))//cas比较并且替换原值
+                 if (compareAndSetState(0,acquires))//cas比较并且替换原值。
                  {
                      /*设置当前线程为持有锁的线程*/
                      setExclusiveOwnerThread(current);
@@ -47,7 +50,7 @@ public class ReentrantLock5 implements Lock5 ,Serializable {
                  }
               }else
               {
-                  if (current ==getExclusiveOwnerThread())//如果当前线程等于锁持有线程（可重入锁）
+                  if (current == getExclusiveOwnerThread())//如果当前线程等于锁持有线程（可重入锁）
                   {
                       int n = i + acquires ;//锁状态加1
 
@@ -56,6 +59,7 @@ public class ReentrantLock5 implements Lock5 ,Serializable {
                           throw new Error("Maxnuim lock count exceeded") ;
 
                       }
+                      /*设置锁状态*/
                       setState(n);
                       return  true ;
 
@@ -128,9 +132,10 @@ public class ReentrantLock5 implements Lock5 ,Serializable {
 
         @Override
         void lock() {
-
+            /*比较并替换当前*/
             if (compareAndSetState(0,1))
             {
+                /*将当前线程设置为持有线程独占线程*/
                 setExclusiveOwnerThread(Thread.currentThread());
 
             }else
@@ -182,6 +187,9 @@ public class ReentrantLock5 implements Lock5 ,Serializable {
         }
     }
 
+    /**
+     * 获取锁
+     */
     @Override
     public void lock() {
         sync5.lock();
