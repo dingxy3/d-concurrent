@@ -179,14 +179,14 @@ public class ReentrantLock5 implements Lock5 ,Serializable {
                     return true ;
 
                 }
-            }else if(t == getExclusiveOwnerThread())
+            }else if(t == getExclusiveOwnerThread())//如果是当前线程持有锁
             {
-                int n = c + a ;
+                int n = c + a ;//可重入锁
                 if (n < 0)
                 {
                     throw new Error("Maximum lock count exceeded");
                 }
-                setState(n);
+                setState(n);//设置锁的状态
                 return true ;
 
             }
@@ -196,17 +196,27 @@ public class ReentrantLock5 implements Lock5 ,Serializable {
     }
 
     /**
-     * 获取锁
+     * 获取锁，获取不到阻塞。
+     * 非公平的方式tryAcquire后返回false，那么就走acquireQueued，自旋锁直到获得锁。一直阻塞着
+     * 公平锁tryAcquire方式多一个hasQueueedProfessor判断当前是否是对首，是的话获得锁，不是的话
+     * 那么就走acquireQueued，自旋锁直到获得锁。一直阻塞着
      */
     @Override
     public void lock() {
         sync5.lock();
     }
 
+    /**
+     *不论是公平锁还是非公平锁都该方法走得都是非公平锁
+     * 获得锁则cas 替换，返回true
+     * 获不到锁则返回false，此时线程不阻塞，可以做其他事情
+     * @return
+     */
     @Override
     public boolean tryLock() {
         return sync5.nonfairTryAcquire(1);
     }
+
 
     @Override
     public boolean tryLock(long times, TimeUnit unit) throws InterruptedException {
