@@ -2,8 +2,8 @@
 ```
 ReentranLock只支持独占方式的获取操作,内部类Sync集成AQS,并且重写了
 tryAcquire()->lock
-tryRelease()->方法
-isHeldExclusively()
+tryRelease()->unlock方法
+isHeldExclusively()->判断dq线程是否是锁持有线程
 ```
 
 ### 背景
@@ -41,5 +41,6 @@ Sync以抽象内部类的身份在ReenTrantLock出现
 具体怎么实现公平和非公平2个构造方法，默认非公平，传boolean
           ReentrantLock()
           ReentrantLock(boolean)
-          公平锁lock()方法是有队列，hasQueueProced（），而非公平锁，直接去抢占没有队列这一环
+          公平锁lock()方法先通过hasQueueProced（）判断是否前面是否还有节点即当前线程是否是头结点，
+          而非公平锁，直接去抢占没有判断队列头结点这一环
           
