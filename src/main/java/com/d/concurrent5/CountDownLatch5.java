@@ -66,7 +66,8 @@ public class CountDownLatch5 {
                 //CAS设置计数值减一
                 if (compareAndSetState(c, nextc))
                 {
-                    //最后一个线程才会走到这一步返回true
+                    //最后一个线程才会走到这一步返回true，然后才会进入AQS的doReleaseShared()
+                    //方法释放主线程锁
                     return nextc == 0;
                 }
             }
