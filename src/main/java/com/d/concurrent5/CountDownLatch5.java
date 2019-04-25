@@ -74,6 +74,9 @@ public class CountDownLatch5 {
         }
     }
 
+    /**
+     * 计数器减1
+     */
     public void  countDown(){
         syn.releaseShared(1);
     }
