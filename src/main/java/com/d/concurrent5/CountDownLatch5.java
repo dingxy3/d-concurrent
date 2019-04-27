@@ -81,6 +81,10 @@ public class CountDownLatch5 {
         syn.releaseShared(1);
     }
 
+    /**
+     * 线程阻塞在此，知道countDown()全部减1到0后
+     * @throws InterruptedException
+     */
     public void await() throws InterruptedException {
        syn.acquireSharedInterruptibly(1) ;
     }
