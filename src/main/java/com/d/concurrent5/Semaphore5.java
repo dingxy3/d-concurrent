@@ -49,6 +49,7 @@ public class Semaphore5 {
     static final class  Fair extends  Syn{
          Fair(int permits){ super(permits); }
 
+        @Override
         protected int tryAcquireShared(int acquries) {
                return  nonfairTryAcquireShared(acquries) ;
         }
@@ -74,7 +75,10 @@ public class Semaphore5 {
      * @throws InterruptedException
      */
     public  void acquire(int permits) throws InterruptedException {
-        if (permits < 0) throw  new IllegalArgumentException();
+        if (permits < 0)
+        {
+            throw new IllegalArgumentException();
+        }
 
         syn.acquireSharedInterruptibly(permits);
 
