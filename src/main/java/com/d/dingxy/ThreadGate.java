@@ -3,7 +3,8 @@ package com.d.dingxy;
 /**
  * @param
  * @Author: dingxy3
- * @Description:阀门类
+ * @Description:阀门类,使用条件谓词相当于状态，Object
+ *方法的wait() notifyAll()
  * @Date: Created in  2019/4/16
  **/
 public class ThreadGate {
