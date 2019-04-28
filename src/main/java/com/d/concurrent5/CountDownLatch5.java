@@ -8,6 +8,8 @@ import com.d.concurrent5.locks5.AbstractQueuedSynchronizer5;
  * @version [版本号, 2019/4/10]
  * @Auther: dingxy
  * @Description:线程汇聚，阻塞当前主线程，让其他线程先执行完。共享锁
+ * tryReleaseShared()
+ * tryAcquireShared()
  * @since [产品/模块版本]
  * =============================
  */
@@ -42,7 +44,7 @@ public class CountDownLatch5 {
 
         @Override
         protected int tryAcquireShared(int arg) {
-           //
+           //是否还有线程在占用此锁
            return ( getState() == 0 ) ? 1 : -1 ;
         }
 
@@ -86,6 +88,8 @@ public class CountDownLatch5 {
      * @throws InterruptedException
      */
     public void await() throws InterruptedException {
+
        syn.acquireSharedInterruptibly(1) ;
+
     }
 }

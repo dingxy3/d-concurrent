@@ -9,6 +9,10 @@ import java.util.concurrent.locks.AbstractQueuedSynchronizer;
  * @version [版本号, 2019/3/29]
  * @Auther: dingxy
  * @Description:
+ * ReentranLock只支持独占方式的获取操作,内部类Sync集成AQS,并且重写了
+ *tryAcquire()->lock
+ *tryRelease()->unlock方法
+ *isHeldExclusively()->判断dq线程是否是锁持有线程
  * @since [产品/模块版本]
  * =============================
  */
