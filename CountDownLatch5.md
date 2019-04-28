@@ -11,6 +11,10 @@ Doug Lea 大神在 JUC 包中为我们准备了大量的多线程工具，其中
 名为倒计时门栓或者线程汇聚，本文档旨在搞懂以上几个问题。
 
 ```
+```
+主线程被阻塞在await()方法处，直到所有其他的线程调用完countdown()后，到达await()
+主线程才可是执行
+```
 #### CountDownLatch使用
 ```java
 class Drive2 {
