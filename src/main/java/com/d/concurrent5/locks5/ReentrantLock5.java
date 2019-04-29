@@ -238,7 +238,7 @@ public class ReentrantLock5 implements Lock5 ,Serializable {
     }
 
     @Override
-    public Condition5 newConditon5() {
+    public Condition5 newCondition5() {
 
        // return sync5.newContion() ;
         return null ;

@@ -22,5 +22,5 @@ public interface Lock5 {
 
     void unlock();
 
-    Condition5 newConditon5();
+    Condition5 newCondition5();
 }

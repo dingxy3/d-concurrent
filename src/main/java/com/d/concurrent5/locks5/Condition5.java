@@ -5,7 +5,7 @@ package com.d.concurrent5.locks5;
  *
  * @version [版本号, 2019/3/29]
  * @Auther: dingxy
- * @Description: it
+ * @Description: 条件
  * @since [产品/模块版本]
  * =============================
  */

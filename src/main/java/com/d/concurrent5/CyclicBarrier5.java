@@ -1,5 +1,8 @@
 package com.d.concurrent5;
 
+import com.d.concurrent5.locks5.Condition5;
+import com.d.concurrent5.locks5.ReentrantLock5;
+
 /**
  * ============================
  *
@@ -10,4 +13,12 @@ package com.d.concurrent5;
  * =============================
  */
 public class CyclicBarrier5 {
+
+
+    /** 栅栏入口锁*/
+    private final ReentrantLock5 lock = new ReentrantLock5();
+
+    /**待跳闸状态 */
+    private final Condition5 trip = lock.newCondition5();
+
 }
