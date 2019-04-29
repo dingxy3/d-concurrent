@@ -1,6 +1,7 @@
 package com.d.concurrent5.locks5;
 
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Condition;
 
 /**
  * ============================
@@ -22,5 +23,5 @@ public interface Lock5 {
 
     void unlock();
 
-    Condition5 newCondition5();
+    Condition newCondition5();
 }

@@ -385,4 +385,18 @@ public abstract class AbstractQueuedSynchronizer5 extends AbstractOwnableSynchro
                                                    Node5 update) {
         return unsafe.compareAndSwapObject(node, nextOffset, expect, update);
     }
+
+
+    public class ConditionObject implements Condition5, java.io.Serializable {
+
+        @Override
+        public void await() {
+
+        }
+
+        @Override
+        public void singal() {
+
+        }
+    }
 }

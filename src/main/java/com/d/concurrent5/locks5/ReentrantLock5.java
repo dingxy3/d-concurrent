@@ -3,6 +3,7 @@ package com.d.concurrent5.locks5;
 import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.AbstractQueuedSynchronizer;
+import java.util.concurrent.locks.Condition;
 
 /**
  * ============================
@@ -238,9 +239,8 @@ public class ReentrantLock5 implements Lock5 ,Serializable {
     }
 
     @Override
-    public Condition5 newCondition5() {
+    public Condition newCondition5() {
 
-       // return sync5.newContion() ;
-        return null ;
+        return sync5.newContion() ;
     }
 }
