@@ -45,6 +45,7 @@ public class CyclicBarrier5 {
 
     private static class Generation5{
         boolean broken = false;
+
     }
     private int count;
 
