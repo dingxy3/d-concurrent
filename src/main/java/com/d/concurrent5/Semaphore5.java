@@ -7,7 +7,8 @@ import com.d.concurrent5.locks5.AbstractQueuedSynchronizer5;
  *
  * @version [版本号, 2019/4/10]
  * @Auther: dingxy
- * @Description:信号量，每次只允许部分线程干事，限流的效果
+ * @Description:信号量，每次只允许部分线程干事，限流的效果，通过acuire获得一个许可
+ * 获得就干事获取不到就阻塞
  * @since [产品/模块版本]
  * =============================
  */

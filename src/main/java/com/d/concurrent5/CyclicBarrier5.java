@@ -3,6 +3,8 @@ package com.d.concurrent5;
 import com.d.concurrent5.locks5.Condition5;
 import com.d.concurrent5.locks5.ReentrantLock5;
 
+import java.util.concurrent.locks.Condition;
+
 /**
  * ============================
  *
@@ -19,6 +21,33 @@ public class CyclicBarrier5 {
     private final ReentrantLock5 lock = new ReentrantLock5();
 
     /**待跳闸状态 */
-    private final Condition5 trip = lock.newCondition5();
+    private final Condition trip = lock.newCondition5();
 
+    /** 拦截线程数*/
+    private final int parties;
+
+    /** 跳闸时要执行的线程数*/
+    private final Runnable barrierCommand;
+
+    private Generation5 generation = new Generation5();
+
+    private static class Generation5{
+        boolean broken = false;
+    }
+    private int count;
+
+
+    private void nextGeneration() {
+        // signal completion of last generation
+        trip.signalAll();
+        // set up next generation
+        count = parties;
+        generation = new Generation5();
+    }
+
+    private void breakBarrier() {
+        generation.broken = true;
+        count = parties;
+        trip.signalAll();
+    }
 }
