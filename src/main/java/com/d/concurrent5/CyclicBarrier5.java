@@ -29,6 +29,14 @@ public class CyclicBarrier5 {
     /** 跳闸时要执行的线程数*/
     private final Runnable barrierCommand;
 
+    /*构造函数初始化栅栏*/
+    public CyclicBarrier5(int parties, Runnable barrierAction) {
+        if (parties <= 0) throw new IllegalArgumentException();
+        this.parties = parties;
+        this.count = parties;
+        this.barrierCommand = barrierAction;
+    }
+
     private Generation5 generation = new Generation5();
 
     private static class Generation5{
