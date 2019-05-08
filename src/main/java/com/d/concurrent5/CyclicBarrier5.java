@@ -36,8 +36,12 @@ public class CyclicBarrier5 {
         this.count = parties;
         this.barrierCommand = barrierAction;
     }
+    public CyclicBarrier5(int parties) {
+        this(parties, null);
+    }
 
     private Generation5 generation = new Generation5();
+
 
     private static class Generation5{
         boolean broken = false;
